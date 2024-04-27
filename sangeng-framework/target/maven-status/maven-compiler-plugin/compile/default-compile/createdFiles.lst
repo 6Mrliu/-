@@ -1,0 +1,5 @@
+com\sangeng\Main.class
+com\sangeng\mapper\SgArticleMapper.class
+com\sangeng\service\impl\SgArticleServiceImpl.class
+com\sangeng\domain\entity\SgArticle.class
+com\sangeng\service\ISgArticleService.class
