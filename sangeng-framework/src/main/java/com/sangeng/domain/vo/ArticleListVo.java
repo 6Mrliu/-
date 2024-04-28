@@ -19,7 +19,7 @@ public class ArticleListVo {
     private String summary;
     private String categoryName;
     private Long viewCount;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8") // 格式化时间
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8") // 格式化时间
     private LocalDateTime createTime;
     private String thumbnail;
     private Long categoryId;
