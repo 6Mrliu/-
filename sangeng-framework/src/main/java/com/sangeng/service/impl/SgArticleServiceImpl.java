@@ -7,18 +7,17 @@ import com.sangeng.constants.SystemConstants;
 import com.sangeng.domain.ResponseResult;
 import com.sangeng.domain.entity.SgArticle;
 import com.sangeng.domain.entity.SgCategory;
+import com.sangeng.domain.vo.ArticleDetailVo;
 import com.sangeng.domain.vo.HotArticleVo;
 import com.sangeng.domain.vo.PageVo;
-import com.sangeng.domain.vo.articleListVo;
+import com.sangeng.domain.vo.ArticleListVo;
 import com.sangeng.mapper.SgArticleMapper;
 import com.sangeng.service.ISgArticleService;
 import com.sangeng.service.ISgCategoryService;
 import com.sangeng.utils.BeanCopyUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,31 +65,51 @@ public class SgArticleServiceImpl extends ServiceImpl<SgArticleMapper, SgArticle
      */
     public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId) {
 
+        //获取查询结果
         Page<SgArticle> articlePage = lambdaQuery()
-                .eq(categoryId!=0,SgArticle::getCategoryId, categoryId)
-                .eq(SgArticle::getStatus, SystemConstants.ARTICLE_STATUS_NORMAL)
-                .orderByDesc(SgArticle::getIsTop)
-                .page(new Page<>(pageNum, pageSize));
+                .eq(categoryId!=0,SgArticle::getCategoryId, categoryId)//查询指定分类下的文章
+                .eq(SgArticle::getStatus, SystemConstants.ARTICLE_STATUS_NORMAL)//查询正式发布的文章
+                .orderByDesc(SgArticle::getIsTop)//降序排列
+                .page(new Page<>(pageNum, pageSize));//分页查询
 
         List<SgArticle> records = articlePage.getRecords();
 
-        //数据封装
-        List<articleListVo> articleListVos = BeanCopyUtils.copyBeanList(records, articleListVo.class);
+        //VO数据封装
+        List<ArticleListVo> ArticleListVos = BeanCopyUtils.copyBeanList(records, ArticleListVo.class);
 
-        articleListVos = articleListVos.stream()
-                .map(articleListVo -> {
+        //填充分类名
+        ArticleListVos = ArticleListVos.stream()
+                .map(ArticleListVo -> {
                     //根据分类id查询分类名
-                    Long categoryId1 = articleListVo.getCategoryId();
+                    Long categoryId1 = ArticleListVo.getCategoryId();
                     SgCategory category = categoryService.getById(categoryId1);
                     if (category!=null){
                         String categoryName = category.getName();
-                        articleListVo.setCategoryName(categoryName);
+                        ArticleListVo.setCategoryName(categoryName);
                     }
-                    return articleListVo;
+                    return ArticleListVo;
                 }).collect(Collectors.toList());
 
-        PageVo pageVo = new PageVo(articlePage.getTotal(), articleListVos);
+        PageVo pageVo = new PageVo(articlePage.getTotal(), ArticleListVos);
 
         return ResponseResult.okResult(pageVo);
+    }
+
+    /**
+     * 获取文章详情
+     * @param id
+     * @return
+     * 要求在文章列表点击阅读全文时能够跳转到文章详情页面，可以让用户阅读文章正文。
+     * 要求：①要在文章详情中展示其分类名
+     */
+    public ResponseResult getArticleDetail(Long id) {
+        //根据id查询文章
+        SgArticle article = getById(id);
+        //封装VO
+        ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
+        //封装分类名
+        articleDetailVo.setCategoryName(categoryService.getById(articleDetailVo.getCategoryId()).getName());
+        //返回数据
+        return ResponseResult.okResult(articleDetailVo);
     }
 }

@@ -5,6 +5,7 @@ import com.sangeng.domain.ResponseResult;
 import com.sangeng.service.ISgArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,6 +41,16 @@ public class ArticleController {
     public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId) {
 
         return sgArticleService.articleList(pageNum, pageSize, categoryId);
+    }
+
+    /**
+     * 查询文章详情
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public ResponseResult getArticleDetail(@PathVariable("id") Long id) {
+        return sgArticleService.getArticleDetail(id);
     }
 
 

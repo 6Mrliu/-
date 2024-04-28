@@ -22,4 +22,6 @@ public interface ISgArticleService extends IService<SgArticle> {
     ResponseResult hotArticleList();
 
     ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId);
+
+    ResponseResult getArticleDetail(Long id);
 }
