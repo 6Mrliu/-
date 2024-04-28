@@ -26,9 +26,10 @@ public class SgArticleServiceImpl extends ServiceImpl<SgArticleMapper, SgArticle
 
     @Autowired
     private ISgCategoryService categoryService;
+
     /**
      * 查询热门文章
-      */
+     */
     public ResponseResult hotArticleList() {
         // 封装查询条件
         LambdaQueryWrapper<SgArticle> wrapper = new LambdaQueryWrapper<>();
@@ -55,19 +56,20 @@ public class SgArticleServiceImpl extends ServiceImpl<SgArticleMapper, SgArticle
 
     /**
      * 分页查询文章列表
-     * @param pageNum 页码
-     * @param pageSize 页面大小
-     * @param categoryId 类别
      *
-     *     要求：
-     *        1.只能查询正式发布的文章
-     *        2.置顶的文章要显示在最前面
+     * @param pageNum    页码
+     * @param pageSize   页面大小
+     * @param categoryId 类别
+     *                   <p>
+     *                   要求：
+     *                   1.只能查询正式发布的文章
+     *                   2.置顶的文章要显示在最前面
      */
     public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId) {
 
         //获取查询结果
         Page<SgArticle> articlePage = lambdaQuery()
-                .eq(categoryId!=0,SgArticle::getCategoryId, categoryId)//查询指定分类下的文章
+                .eq(categoryId != 0, SgArticle::getCategoryId, categoryId)//查询指定分类下的文章
                 .eq(SgArticle::getStatus, SystemConstants.ARTICLE_STATUS_NORMAL)//查询正式发布的文章
                 .orderByDesc(SgArticle::getIsTop)//降序排列
                 .page(new Page<>(pageNum, pageSize));//分页查询
@@ -83,7 +85,7 @@ public class SgArticleServiceImpl extends ServiceImpl<SgArticleMapper, SgArticle
                     //根据分类id查询分类名
                     Long categoryId1 = ArticleListVo.getCategoryId();
                     SgCategory category = categoryService.getById(categoryId1);
-                    if (category!=null){
+                    if (category != null) {
                         String categoryName = category.getName();
                         ArticleListVo.setCategoryName(categoryName);
                     }
@@ -97,9 +99,9 @@ public class SgArticleServiceImpl extends ServiceImpl<SgArticleMapper, SgArticle
 
     /**
      * 获取文章详情
+     *
      * @param id
-     * @return
-     * 要求在文章列表点击阅读全文时能够跳转到文章详情页面，可以让用户阅读文章正文。
+     * @return 要求在文章列表点击阅读全文时能够跳转到文章详情页面，可以让用户阅读文章正文。
      * 要求：①要在文章详情中展示其分类名
      */
     public ResponseResult getArticleDetail(Long id) {
@@ -108,7 +110,9 @@ public class SgArticleServiceImpl extends ServiceImpl<SgArticleMapper, SgArticle
         //封装VO
         ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
         //封装分类名
-        articleDetailVo.setCategoryName(categoryService.getById(articleDetailVo.getCategoryId()).getName());
+        if (articleDetailVo.getCategoryId() != null) {
+            articleDetailVo.setCategoryName(categoryService.getById(articleDetailVo.getCategoryId()).getName());
+        }
         //返回数据
         return ResponseResult.okResult(articleDetailVo);
     }
