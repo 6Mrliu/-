@@ -1,11 +1,10 @@
 package com.sangeng.controller;
 
 import com.sangeng.domain.ResponseResult;
+import com.sangeng.domain.entity.SgComment;
 import com.sangeng.service.ISgCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 评论相关接口
@@ -28,5 +27,16 @@ public class CommentController {
 
         return commentService.commentList(articleId,pageNum,pageSize);
     }
+
+    /**
+     * 添加评论
+     * @param comment
+     * @return
+     */
+    @PostMapping
+    public ResponseResult addComment(@RequestBody SgComment comment){
+        return commentService.addComment(comment);
+    }
+
 
 }

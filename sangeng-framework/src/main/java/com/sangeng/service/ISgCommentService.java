@@ -15,4 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ISgCommentService extends IService<SgComment> {
 
     ResponseResult commentList(Long articleId, Integer pageNum, Integer pageSize);
+
+    ResponseResult addComment(SgComment comment);
+
 }

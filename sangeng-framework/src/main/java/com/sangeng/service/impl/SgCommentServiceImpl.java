@@ -9,11 +9,15 @@ import com.sangeng.domain.entity.SysUser;
 import com.sangeng.domain.vo.CommentListChildrenVo;
 import com.sangeng.domain.vo.CommentListVo;
 import com.sangeng.domain.vo.PageVo;
+import com.sangeng.enums.AppHttpCodeEnum;
+import com.sangeng.exception.SystemException;
 import com.sangeng.mapper.SgCommentMapper;
 import com.sangeng.service.ISgCommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sangeng.utils.BeanCopyUtils;
+import com.sangeng.utils.SecurityContextUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,7 @@ public class SgCommentServiceImpl extends ServiceImpl<SgCommentMapper, SgComment
 
     /**
      * 查询评论列表
+     *
      * @param articleId
      * @param pageNum
      * @param pageSize
@@ -62,6 +67,23 @@ public class SgCommentServiceImpl extends ServiceImpl<SgCommentMapper, SgComment
         return ResponseResult.okResult(pageVo);
     }
 
+    /**
+     * 添加评论
+     *
+     * @param comment
+     * @return
+     */
+    public ResponseResult addComment(SgComment comment) {
+        if (!StringUtils.hasText(comment.getContent())) {
+            throw new SystemException(AppHttpCodeEnum.CONTENT_NOT_NULL);
+        }
+
+        comment.setCreateBy(SecurityContextUtils.getUserId());
+        save(comment);
+
+        return ResponseResult.okResult();
+    }
+
     // 完善父评论
     private List<CommentListVo> setChildren(List<CommentListVo> commentListVos) {
         return commentListVos.stream().map(sgComment -> {
@@ -75,8 +97,9 @@ public class SgCommentServiceImpl extends ServiceImpl<SgCommentMapper, SgComment
             //对子评论中的用户昵称和回复者昵称赋值
             commentListChildrenVos.forEach(commentListChildrenVo -> {
                 String username = Db.lambdaQuery(SysUser.class).eq(SysUser::getId, commentListChildrenVo.getCreateBy()).one().getNickName();
+                String toCommentUserName = Db.lambdaQuery(SysUser.class).eq(SysUser::getId, commentListChildrenVo.getToCommentUserId()).one().getNickName();
                 commentListChildrenVo.setUsername(username);
-                commentListChildrenVo.setToCommentUserName(nickName);
+                commentListChildrenVo.setToCommentUserName(toCommentUserName);
             });
             //将子评论赋值
             sgComment.setChildren(commentListChildrenVos);
