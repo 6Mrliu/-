@@ -16,7 +16,7 @@ public class CommentController {
     private ISgCommentService commentService;
 
     /**
-     * 获取评论列表
+     * 获取文章评论列表
      * @param articleId
      * @param pageNum
      * @param pageSize
@@ -37,6 +37,20 @@ public class CommentController {
     public ResponseResult addComment(@RequestBody SgComment comment){
         return commentService.addComment(comment);
     }
+
+
+    /**
+     * 获取友链评论列表
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/linkCommentList")
+    public ResponseResult linkCommentList(Integer pageNum, Integer pageSize ){
+
+        return commentService.linkCommentList(pageNum,pageSize);
+    }
+
 
 
 }

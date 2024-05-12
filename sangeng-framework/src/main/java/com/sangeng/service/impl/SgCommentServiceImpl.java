@@ -3,6 +3,7 @@ package com.sangeng.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.sangeng.constants.SystemConstants;
 import com.sangeng.domain.ResponseResult;
 import com.sangeng.domain.entity.SgComment;
 import com.sangeng.domain.entity.SysUser;
@@ -15,7 +16,7 @@ import com.sangeng.mapper.SgCommentMapper;
 import com.sangeng.service.ISgCommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sangeng.utils.BeanCopyUtils;
-import com.sangeng.utils.SecurityContextUtils;
+import com.sangeng.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -46,8 +47,9 @@ public class SgCommentServiceImpl extends ServiceImpl<SgCommentMapper, SgComment
         // 查询所有父评论
         LambdaQueryWrapper<SgComment> wrapper = new LambdaQueryWrapper<SgComment>()
                 .eq(SgComment::getArticleId, articleId)
-                .orderByDesc(SgComment::getCreateTime)
-                .eq(SgComment::getRootId, -1);
+                .eq(SgComment::getType, SystemConstants.ARTICLE_COMMENT)
+                .eq(SgComment::getRootId, -1)
+                .orderByDesc(SgComment::getCreateTime);
 
         //封装所有父评论
         Page<SgComment> page = page(new Page<>(pageNum, pageSize), wrapper);
@@ -78,10 +80,39 @@ public class SgCommentServiceImpl extends ServiceImpl<SgCommentMapper, SgComment
             throw new SystemException(AppHttpCodeEnum.CONTENT_NOT_NULL);
         }
 
-        comment.setCreateBy(SecurityContextUtils.getUserId());
+        comment.setCreateBy(SecurityUtils.getUserId());
         save(comment);
 
         return ResponseResult.okResult();
+    }
+
+    /**
+     * 友链评论列表
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    public ResponseResult linkCommentList(Integer pageNum, Integer pageSize) {
+        // 查询所有父评论
+        Page<SgComment> page = lambdaQuery()
+                .eq(SgComment::getType, SystemConstants.LINK_COMMENT)
+                .eq(SgComment::getRootId, -1)
+                .orderByDesc(SgComment::getCreateTime)
+                .page(new Page<>(pageNum, pageSize));
+        List<SgComment> records = page.getRecords();
+
+        //封装
+        List<CommentListVo> commentListVos = BeanCopyUtils.copyBeanList(records, CommentListVo.class);
+
+        //获取子评论
+        List<CommentListVo> commentListVos1 = setChildren(commentListVos);
+
+        //封装
+        PageVo pageVo = new PageVo(page.getTotal(), commentListVos1);
+
+        //返回
+        return ResponseResult.okResult(pageVo);
+
     }
 
     // 完善父评论
@@ -91,7 +122,7 @@ public class SgCommentServiceImpl extends ServiceImpl<SgCommentMapper, SgComment
             String nickName = Db.lambdaQuery(SysUser.class).eq(SysUser::getId, sgComment.getCreateBy()).one().getNickName();
             sgComment.setUsername(nickName);
             //获取子评论
-            List<SgComment> list = lambdaQuery().eq(SgComment::getRootId, sgComment.getId()).orderByDesc(SgComment::getCreateTime).list();
+            List<SgComment> list = lambdaQuery().eq(SgComment::getRootId, sgComment.getId()).orderByAsc(SgComment::getCreateTime).list();
             //封装子评论
             List<CommentListChildrenVo> commentListChildrenVos = BeanCopyUtils.copyBeanList(list, CommentListChildrenVo.class);
             //对子评论中的用户昵称和回复者昵称赋值

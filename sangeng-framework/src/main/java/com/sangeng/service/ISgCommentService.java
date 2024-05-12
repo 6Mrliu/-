@@ -18,4 +18,6 @@ public interface ISgCommentService extends IService<SgComment> {
 
     ResponseResult addComment(SgComment comment);
 
+    ResponseResult linkCommentList(Integer pageNum, Integer pageSize);
+
 }
