@@ -41,7 +41,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * 更新用户信息
      * @return
      */
-    public ResponseResult updateUserInfo() {
-        return null;
+    public ResponseResult updateUserInfo(SysUser user) {
+        boolean update = updateById(user);
+        return ResponseResult.okResult(200,"操作成功");
     }
 }

@@ -1,12 +1,10 @@
 package com.sangeng.controller;
 
 import com.sangeng.domain.ResponseResult;
+import com.sangeng.domain.entity.SysUser;
 import com.sangeng.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 用户相关接口
@@ -27,7 +25,7 @@ public class UserController {
     }
 
     @PutMapping("/userInfo")
-    public ResponseResult updateUserInfo(){
-        return userService.updateUserInfo();
+    public ResponseResult updateUserInfo(@RequestBody SysUser user){
+        return userService.updateUserInfo(user);
     }
 }
