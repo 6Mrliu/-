@@ -24,8 +24,18 @@ public class UserController {
         return userService.userInfo();
     }
 
-    @PutMapping("/userInfo")
+    @PutMapping("userInfo")
     public ResponseResult updateUserInfo(@RequestBody SysUser user){
         return userService.updateUserInfo(user);
+    }
+
+    /**
+     * 注册
+     * @param user
+     * @return
+     */
+    @PostMapping("register")
+    public ResponseResult register(@RequestBody SysUser user){
+        return userService.register(user);
     }
 }

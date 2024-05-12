@@ -17,4 +17,6 @@ public interface ISysUserService extends IService<SysUser> {
     ResponseResult userInfo();
 
     ResponseResult updateUserInfo(SysUser user);
+
+    ResponseResult register(SysUser user);
 }
