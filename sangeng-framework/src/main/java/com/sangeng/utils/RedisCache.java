@@ -235,4 +235,19 @@ public class RedisCache
     {
         return redisTemplate.keys(pattern);
     }
+
+
+    /**
+     * 为Redis中指定hash的特定字段增加指定的值。
+     *
+     * @param key 指定hash的key。
+     * @param hKey 指定hash中的字段。
+     * @param v 要增加的值，可以为负数。
+     */
+    public void incrementCacheMapValue(String key, String hKey, int v)
+    {
+        // 对指定hash字段的值进行增量操作
+        redisTemplate.opsForHash().increment(key, hKey, v);
+    }
+
 }

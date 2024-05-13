@@ -6,8 +6,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -19,6 +22,8 @@ import lombok.experimental.Accessors;
  * @since 2024-04-27
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)//忽略属性值相同
 @Accessors(chain = true) //链式编程
 @TableName("sg_article")//表名
@@ -102,4 +107,8 @@ public class SgArticle implements Serializable {
     private Integer delFlag;
 
 
+    public SgArticle(Long id, Long viewCount) {
+        this.id = id;
+        this.viewCount = viewCount;
+    }
 }

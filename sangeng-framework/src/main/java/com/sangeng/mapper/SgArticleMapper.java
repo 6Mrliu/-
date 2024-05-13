@@ -4,6 +4,8 @@ package com.sangeng.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.sangeng.domain.entity.SgArticle;
 
+import java.util.List;
+
 /**
  * <p>
  * 文章表 Mapper 接口
@@ -14,4 +16,5 @@ import com.sangeng.domain.entity.SgArticle;
  */
 public interface SgArticleMapper extends BaseMapper<SgArticle> {
 
+    List<SgArticle> selectViewCount();
 }
