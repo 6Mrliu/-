@@ -3,21 +3,29 @@ package com.sangeng.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.sangeng.constants.SystemConstants;
 import com.sangeng.domain.ResponseResult;
+import com.sangeng.domain.dto.AddArticleDTO;
+import com.sangeng.domain.dto.ArticlePageQueryDTO;
 import com.sangeng.domain.entity.SgArticle;
+import com.sangeng.domain.entity.SgArticleTag;
 import com.sangeng.domain.entity.SgCategory;
+import com.sangeng.domain.entity.SgTag;
 import com.sangeng.domain.vo.ArticleDetailVo;
 import com.sangeng.domain.vo.HotArticleVo;
 import com.sangeng.domain.vo.PageVo;
 import com.sangeng.domain.vo.ArticleListVo;
 import com.sangeng.mapper.SgArticleMapper;
 import com.sangeng.service.ISgArticleService;
+import com.sangeng.service.ISgArticleTagService;
 import com.sangeng.service.ISgCategoryService;
 import com.sangeng.utils.BeanCopyUtils;
 import com.sangeng.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +37,8 @@ public class SgArticleServiceImpl extends ServiceImpl<SgArticleMapper, SgArticle
     private ISgCategoryService categoryService;
     @Autowired
     RedisCache redisCache;
+    @Autowired
+    ISgArticleTagService articleTagService;
 
     /**
      * 查询热门文章
@@ -123,10 +133,91 @@ public class SgArticleServiceImpl extends ServiceImpl<SgArticleMapper, SgArticle
         return ResponseResult.okResult(articleDetailVo);
     }
 
-    @Override
+    /**
+     * 更新文章浏览量
+     *
+     * @param id
+     * @return
+     */
     public ResponseResult updateViewCount(Long id) {
         //更新redis中对应 id的浏览量
-        redisCache.incrementCacheMapValue("article:viewCount",id.toString(),1);
+        redisCache.incrementCacheMapValue("article:viewCount", id.toString(), 1);
         return ResponseResult.okResult();
+    }
+
+    /**
+     * 添加文章
+     *
+     * @param articleDTO
+     */
+    @Transactional
+    public void insertArticle(AddArticleDTO articleDTO) {
+        SgArticle article = BeanCopyUtils.copyBean(articleDTO, SgArticle.class);
+        save(article);
+
+        //向文章标签关联表中插入数据
+        List<Long> tags = articleDTO.getTags();
+        //使用Stream流
+        List<SgArticleTag> tagList = tags.stream().map(tagId -> new SgArticleTag(article.getId(), tagId)).collect(Collectors.toList());
+        articleTagService.saveBatch(tagList);
+
+    }
+
+    /**
+     * 文章列表查询
+     * @param articlePageQueryDTO
+     * @return
+     */
+    public ResponseResult articlePageQuery(ArticlePageQueryDTO articlePageQueryDTO) {
+
+        LambdaQueryWrapper<SgArticle> wrapper = new LambdaQueryWrapper<SgArticle>()
+                .like(StringUtils.hasText(articlePageQueryDTO.getTitle()), SgArticle::getTitle, articlePageQueryDTO.getTitle())
+                .like(StringUtils.hasText(articlePageQueryDTO.getSummary()), SgArticle::getSummary, articlePageQueryDTO.getSummary())
+                .orderByDesc(SgArticle::getCreateTime);
+
+        Page<SgArticle> page = page(new Page<>(articlePageQueryDTO.getPageNum(), articlePageQueryDTO.getPageSize()));
+        PageVo pageVo = new PageVo(page.getTotal(), BeanCopyUtils.copyBeanList(page.getRecords(), ArticleListVo.class));
+        return ResponseResult.okResult(pageVo);
+    }
+
+    /**
+     * 根据id查询文章
+     * @param id
+     * @return
+     */
+    public ResponseResult byIdArticle(Long id) {
+        SgArticle article = getById(id);
+        List<SgArticleTag> list = Db.lambdaQuery(SgArticleTag.class)
+                .eq(SgArticleTag::getArticleId, id)
+                .list();
+        List<String> tagList = list.stream().map(sgArticleTag -> sgArticleTag.getTagId().toString()).collect(Collectors.toList());
+
+        article.setTags(tagList);
+        return ResponseResult.okResult(article);
+    }
+
+    /**
+     * 更新文章
+     * @param article
+     */
+    @Transactional
+    public void updateArticleById(SgArticle article) {
+        List<String> tags = article.getTags();
+        Db.lambdaUpdate(SgArticleTag.class).eq(SgArticleTag::getArticleId, article.getId()).remove();
+        //使用Stream流
+        tags.stream().map(tagId -> new SgArticleTag(article.getId(), Long.valueOf(tagId))).forEach(articleTagService::save);
+        updateById(article);
+    }
+
+    /**
+     * 删除文章
+     * @param ids
+     */
+    @Transactional
+    public void removeArticleByIds(List<Long> ids) {
+        LambdaQueryWrapper<SgArticleTag> wrapper =
+                new LambdaQueryWrapper<SgArticleTag>().in(SgArticleTag::getArticleId, ids);
+        articleTagService.remove(wrapper);
+        removeByIds(ids);
     }
 }

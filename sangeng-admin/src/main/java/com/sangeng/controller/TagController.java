@@ -4,7 +4,9 @@ import com.sangeng.domain.ResponseResult;
 import com.sangeng.domain.dto.TagPageQueryDTO;
 import com.sangeng.domain.entity.SgTag;
 import com.sangeng.domain.vo.PageVo;
+import com.sangeng.domain.vo.TagVo;
 import com.sangeng.service.ISgTagService;
+import com.sangeng.utils.BeanCopyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +35,7 @@ public class TagController {
 
     /**
      * 添加标签
+     *
      * @param tag
      * @return
      */
@@ -44,6 +47,7 @@ public class TagController {
 
     /**
      * 删除标签
+     *
      * @param ids
      * @return
      */
@@ -55,10 +59,11 @@ public class TagController {
 
     /**
      * 根据id查询标签
+     *
      * @param id
      * @return
      */
-    @GetMapping ("{id}")
+    @GetMapping("{id}")
     public ResponseResult byIdTag(@PathVariable Long id) {
         SgTag sgTag = tagService.listById(id);
         return ResponseResult.okResult(sgTag);
@@ -71,6 +76,16 @@ public class TagController {
     public ResponseResult updateTag(@RequestBody SgTag tag) {
         tagService.updateById(tag);
         return ResponseResult.okResult();
+    }
+
+    /**
+     * 获取所有标签
+     */
+    @GetMapping("listAllTag")
+    public ResponseResult listAllTag() {
+        List<SgTag> tagList = tagService.list();
+        List<TagVo> tagVos = BeanCopyUtils.copyBeanList(tagList, TagVo.class);
+        return ResponseResult.okResult(tagVos);
     }
 
 }

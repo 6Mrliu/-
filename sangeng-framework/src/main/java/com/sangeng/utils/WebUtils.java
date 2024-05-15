@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class WebUtils
+public class    WebUtils
 {
     /**
      * 将字符串渲染到客户端

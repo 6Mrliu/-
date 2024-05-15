@@ -2,20 +2,18 @@ package com.sangeng.controller;
 
 import com.sangeng.domain.ResponseResult;
 import com.sangeng.utils.AliOssUtil;
-import kotlin.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.UUID;
 
 /**
  * 通用接口
  */
 @RestController
-public class CommonController {
+public class UploadController {
     @Autowired
     private AliOssUtil aliOssUtil;
     @PostMapping("upload")

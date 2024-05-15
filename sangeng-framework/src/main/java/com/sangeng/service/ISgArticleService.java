@@ -3,8 +3,12 @@ package com.sangeng.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sangeng.domain.ResponseResult;
+import com.sangeng.domain.dto.AddArticleDTO;
+import com.sangeng.domain.dto.ArticlePageQueryDTO;
 import com.sangeng.domain.entity.SgArticle;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -26,4 +30,15 @@ public interface ISgArticleService extends IService<SgArticle> {
     ResponseResult getArticleDetail(Long id);
 
     ResponseResult updateViewCount(Long id);
+
+    void insertArticle(AddArticleDTO articleDTO);
+
+    ResponseResult articlePageQuery(ArticlePageQueryDTO articlePageQueryDTO);
+
+    ResponseResult byIdArticle(Long id);
+
+    void updateArticleById(SgArticle article);
+
+    void removeArticleByIds(List<Long> ids);
+
 }

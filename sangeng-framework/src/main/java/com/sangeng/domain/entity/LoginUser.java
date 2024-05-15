@@ -13,9 +13,11 @@ import java.util.Collection;
 public class LoginUser implements UserDetails {
 
     private SysUser user;//用户信息
+
     //权限信息
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         return null;
     }
 
