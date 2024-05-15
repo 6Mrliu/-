@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sangeng.mapper.SysMenuMapper">
+
+    <select id="selectMenuPermsByUserId" resultType="java.lang.String" parameterType="java.lang.Long">
+        select distinct perms
+        from sg_blog.sys_user_role sur
+        left join sg_blog.sys_role_menu srm on sur.role_id = srm.role_id
+        left join sg_blog.sys_menu sm on srm.menu_id = sm.id
+        <where>
+            <if test="userId != 1">
+                sur.user_id = #{userId}
+            </if>
+
+            and sm.del_flag = '0'
+            and sm.menu_type in('F', 'C')
+            and sm.status = '0'
+        </where>
+
+    </select>
+    <select id="getAllRouterMenu" resultType="com.sangeng.domain.entity.SysMenu">
+        select distinct *
+        from sg_blog.sys_menu
+        where del_flag = '0'
+          and status = '0'
+          and parent_id = 0
+          and menu_type in ('M', 'C')
+        order by parent_id, order_num
+    </select>
+
+    <select id="selectRouterMenuTreeById" resultType="com.sangeng.domain.entity.SysMenu">
+        select distinct sm.*
+        from sg_blog.sys_user_role sur
+                 left join sg_blog.sys_role_menu srm on sur.role_id = srm.role_id
+                 left join sg_blog.sys_menu sm on srm.menu_id = sm.id
+        where sur.user_id = #{id}
+          and sm.del_flag = '0'
+          and sm.status = '0'
+          and sm.menu_type in ('M', 'C')
+          and parent_id = 0
+        order by sm.order_num, sm.parent_id
+    </select>
+</mapper>

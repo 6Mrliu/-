@@ -7,5 +7,9 @@ public interface AdminLoginService {
     ResponseResult login(SysUser user);
 
 
+    //ResponseResult getUserInfo();
 
+    ResponseResult getRouters();
+
+    ResponseResult logout();
 }

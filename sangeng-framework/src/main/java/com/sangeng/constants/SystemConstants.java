@@ -26,4 +26,25 @@ public class SystemConstants {
      * 评论类型为：友联评论
      */
     public static final String LINK_COMMENT = "1";
+    /**
+     * 菜单类型：父目录
+     */
+    public static final int TYPE_MENU_PARENT = 0;
+    /**
+     * 菜单类型：目录
+     */
+    public static final String TYPE_MENU_CATEGORY = "M";
+    /**
+     * 菜单类型：按钮
+     */
+    public static final String TYPE_MENU_BUTTON = "F";
+    /**
+     * 菜单类型：菜单
+     */
+    public static final String TYPE_MENU_MENU = "C";
+
+    /**
+     * 菜单状态：正常
+     */
+    public static final Object STATUS_NORMAL = 0;
 }
