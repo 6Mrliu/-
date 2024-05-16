@@ -20,4 +20,6 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
     List<SysMenu> getAllRouterMenu();
 
     List<SysMenu> selectRouterMenuTreeById(Long id);
+
+    List<Long> selectMenuListByRoleId(Long id);
 }

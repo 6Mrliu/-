@@ -1,5 +1,9 @@
 package com.sangeng.service;
 
+import com.sangeng.domain.ResponseResult;
+import com.sangeng.domain.dto.AddRoleDTO;
+import com.sangeng.domain.dto.RoleChangeDTO;
+import com.sangeng.domain.dto.RolePageQueryDTO;
 import com.sangeng.domain.entity.SysRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -17,4 +21,15 @@ public interface ISysRoleService extends IService<SysRole> {
 
     List<String> getRolesByUserId(Long id);
 
+    ResponseResult listAllRole(RolePageQueryDTO rolePageQueryDTO);
+
+    ResponseResult changeStatus(RoleChangeDTO roleChangeDTO);
+
+    ResponseResult addRole(AddRoleDTO addRoleDTO);
+
+    ResponseResult getRoleById(Long id);
+
+    ResponseResult updeteRole(AddRoleDTO addRoleDTO);
+
+    ResponseResult deleteById(Long id);
 }

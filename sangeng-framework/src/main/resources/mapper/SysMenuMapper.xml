@@ -40,4 +40,10 @@
           and parent_id = 0
         order by sm.order_num, sm.parent_id
     </select>
+    <select id="selectMenuListByRoleId" resultType="java.lang.Long" parameterType="java.lang.Long">
+        select m.menu_id
+        from
+            sg_blog.sys_role_menu m
+        where role_id = #{id}
+    </select>
 </mapper>

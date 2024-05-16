@@ -1,5 +1,6 @@
 package com.sangeng.service;
 
+import com.sangeng.domain.ResponseResult;
 import com.sangeng.domain.entity.SysMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sangeng.domain.vo.MenusAndChildrenVo;
@@ -18,6 +19,17 @@ public interface ISysMenuService extends IService<SysMenu> {
 
     List<String> getPermissionsByUserId(Long id);
 
+
     List<MenusAndChildrenVo> selectRouterMenuTreeByUserId(Long id);
+
+    List<SysMenu> menuList(String status,String menuName);
+
+    ResponseResult deleteById(Long menuId);
+
+    ResponseResult updeteMenu(SysMenu menu);
+
+    ResponseResult selectMenuTree();
+
+    ResponseResult selectRouterMenuTreeById(Long id);
 
 }
