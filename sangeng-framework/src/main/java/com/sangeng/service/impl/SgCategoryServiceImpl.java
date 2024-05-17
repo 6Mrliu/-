@@ -2,10 +2,16 @@ package com.sangeng.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sangeng.constants.SystemConstants;
+import com.sangeng.domain.ResponseResult;
+import com.sangeng.domain.dto.AddCategoryDTO;
+import com.sangeng.domain.dto.CategoryPageQueryDTO;
 import com.sangeng.domain.entity.SgArticle;
 import com.sangeng.domain.entity.SgCategory;
 import com.sangeng.domain.vo.CategoryListVo;
+import com.sangeng.domain.vo.CategoryVo;
+import com.sangeng.domain.vo.PageVo;
 import com.sangeng.mapper.SgCategoryMapper;
 import com.sangeng.service.ISgArticleService;
 import com.sangeng.service.ISgCategoryService;
@@ -13,6 +19,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sangeng.utils.BeanCopyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -53,5 +60,34 @@ public class SgCategoryServiceImpl extends ServiceImpl<SgCategoryMapper, SgCateg
         //封装
         List<CategoryListVo> categoryListVoList = BeanCopyUtils.copyBeanList(categoryList, CategoryListVo.class);
         return categoryListVoList;
+    }
+
+    /**
+     * 分页查询分类
+     * @param categoryPageQueryDTO
+     * @return
+     */
+    public ResponseResult categoryPageQuery(CategoryPageQueryDTO categoryPageQueryDTO) {
+        LambdaQueryWrapper<SgCategory> wrapper = new LambdaQueryWrapper<SgCategory>()
+                .eq(StringUtils.hasText(categoryPageQueryDTO.getStatus()), SgCategory::getStatus, categoryPageQueryDTO.getStatus())
+                .like(StringUtils.hasText(categoryPageQueryDTO.getName()), SgCategory::getName, categoryPageQueryDTO.getName());
+
+        Page<SgCategory> page = page(new Page<>(categoryPageQueryDTO.getPageNum(), categoryPageQueryDTO.getPageSize()));
+
+        List<CategoryVo> categoryVos = BeanCopyUtils.copyBeanList(page.getRecords(), CategoryVo.class);
+
+        PageVo pageVo = new PageVo(page.getTotal(), categoryVos);
+        return ResponseResult.okResult(pageVo);
+    }
+
+    /**
+     * 添加分类
+     * @param category
+     * @return
+     */
+    public ResponseResult addCategory(AddCategoryDTO category) {
+        SgCategory sgCategory = BeanCopyUtils.copyBean(category, SgCategory.class);
+        save(sgCategory);
+        return ResponseResult.okResult();
     }
 }

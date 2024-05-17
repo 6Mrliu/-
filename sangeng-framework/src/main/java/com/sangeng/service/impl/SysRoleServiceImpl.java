@@ -3,6 +3,7 @@ package com.sangeng.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.sangeng.constants.SystemConstants;
 import com.sangeng.domain.ResponseResult;
 import com.sangeng.domain.dto.AddRoleDTO;
 import com.sangeng.domain.dto.RoleChangeDTO;
@@ -67,7 +68,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @param rolePageQueryDTO 分页查询参数，包含角色名和状态等条件。
      * @return 返回角色信息的分页响应结果。
      */
-    public ResponseResult listAllRole(RolePageQueryDTO rolePageQueryDTO) {
+    public ResponseResult listAll(RolePageQueryDTO rolePageQueryDTO) {
         // 构造查询条件
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<SysRole>()
                 .like(StringUtils.hasText(rolePageQueryDTO.getRoleName()), SysRole::getRoleName, rolePageQueryDTO.getRoleName())
@@ -126,6 +127,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         return ResponseResult.okResult(roleById);
     }
 
+    /**
+     * 更新角色信息
+     * @param addRoleDTO
+     * @return
+     */
     @Transactional
     public ResponseResult updeteRole(AddRoleDTO addRoleDTO) {
         //更新角色菜单关联表
@@ -144,6 +150,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         return ResponseResult.okResult();
     }
 
+    /**
+     * 删除角色
+     * @param id
+     * @return
+     */
     @Transactional
     public ResponseResult deleteById(Long id) {
         //删除关联表中的信息
@@ -152,5 +163,18 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         //删除角色信息
         removeById(id);
         return ResponseResult.okResult();
+    }
+
+    /**
+     * 查询所有角色
+     * @return
+     */
+    @Override
+    public ResponseResult listAllRole() {
+        // 查询所有角色
+        LambdaQueryWrapper<SysRole> wrapper =
+                new LambdaQueryWrapper<SysRole>().eq(SysRole::getStatus, SystemConstants.ROLE_STATUS_NORMAL);
+        List<SysRole> roleList = list(wrapper);
+        return ResponseResult.okResult(roleList);
     }
 }

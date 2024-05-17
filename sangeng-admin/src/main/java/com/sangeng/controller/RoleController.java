@@ -23,8 +23,8 @@ public class RoleController {
      * @return
      */
     @GetMapping("/list")
-    public ResponseResult listAllRole(RolePageQueryDTO rolePageQueryDTO) {
-        return roleService.listAllRole(rolePageQueryDTO);
+    public ResponseResult listAll(RolePageQueryDTO rolePageQueryDTO) {
+        return roleService.listAll(rolePageQueryDTO);
     }
 
     /**
@@ -60,12 +60,21 @@ public class RoleController {
     public ResponseResult updateRole(@RequestBody AddRoleDTO addRoleDTO) {
         return roleService.updeteRole(addRoleDTO);
     }
+
     /**
      * 删除角色
      */
     @DeleteMapping("/{id}")
     public ResponseResult deleteRole(@PathVariable Long id) {
         return roleService.deleteById(id);
+    }
+
+    /**
+     * 查询角色列表接口
+     */
+    @GetMapping("/listAllRole")
+    public ResponseResult listAllRole() {
+        return roleService.listAllRole();
     }
 
 

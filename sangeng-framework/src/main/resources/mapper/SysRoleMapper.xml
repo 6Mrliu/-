@@ -12,4 +12,22 @@
           and sr.del_flag = '0'
           and sr.status = '0'
     </select>
+    <select id="selectRolesByUserId" resultType="com.sangeng.domain.entity.SysRole">
+        select sr.*
+        from
+            sg_blog.sys_role sr
+                left join sg_blog.sys_user_role sur on sr.id = sur.role_id
+        where sur.user_id = #{userId}
+          and sr.del_flag = '0'
+          and sr.status = '0'
+    </select>
+    <select id="selectRoleIdsByUserId" resultType="java.lang.String">
+        select sr.id
+        from sg_blog.sys_user_role sur
+                 left join sg_blog.sys_role sr
+                           on sur.role_id = sr.id
+        where sur.user_id = #{userId}
+          and sr.del_flag = '0'
+          and sr.status = '0'
+    </select>
 </mapper>

@@ -21,7 +21,7 @@ public interface ISysRoleService extends IService<SysRole> {
 
     List<String> getRolesByUserId(Long id);
 
-    ResponseResult listAllRole(RolePageQueryDTO rolePageQueryDTO);
+    ResponseResult listAll(RolePageQueryDTO rolePageQueryDTO);
 
     ResponseResult changeStatus(RoleChangeDTO roleChangeDTO);
 
@@ -32,4 +32,6 @@ public interface ISysRoleService extends IService<SysRole> {
     ResponseResult updeteRole(AddRoleDTO addRoleDTO);
 
     ResponseResult deleteById(Long id);
+
+    ResponseResult listAllRole();
 }
