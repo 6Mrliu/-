@@ -87,7 +87,6 @@ public class SgLinkServiceImpl extends ServiceImpl<SgLinkMapper, SgLink> impleme
      * @param link
      * @return
      */
-    @Override
     public ResponseResult updateLink(LinkDTO link) {
         SgLink sgLink = BeanCopyUtils.copyBean(link, SgLink.class);
         updateById(sgLink);

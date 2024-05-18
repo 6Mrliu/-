@@ -25,3 +25,7 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
+oss:
+  accessKey: k3n8XL4sLuQ2bAB7NouvxcOwk7Wi5itXimo_Hd2t
+  secretKey: Dv-PB5Set4-rJDZkcOSjpCtxqnJauQzdL8jmz72z
+  bucket: sg-bolg2233
