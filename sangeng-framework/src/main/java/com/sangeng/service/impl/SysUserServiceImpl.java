@@ -145,8 +145,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (checkPhoneUnique(addUserDTO.getPhonenumber())){
             throw new SystemException(AppHttpCodeEnum.PHONENUMBER_EXIST);
         }
+        //保存用户
         SysUser user = BeanCopyUtils.copyBean(addUserDTO, SysUser.class);
         save(user);
+        //保存用户和角色关联
         List<Long> roleIds = addUserDTO.getRoleIds();
         List<SysUserRole> userRoles = roleIds.stream().map(roleId -> new SysUserRole(user.getId(), roleId)).collect(Collectors.toList());
         userRoleService.saveBatch(userRoles);

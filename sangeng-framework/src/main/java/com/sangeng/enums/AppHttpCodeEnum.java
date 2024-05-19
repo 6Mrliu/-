@@ -19,8 +19,10 @@ public enum AppHttpCodeEnum {
     REQUIRE_PASSWORD(506, "必需填写密码"),
     REQUIRE_EMAIL(507, "必需填写邮箱"),
     REQUIRE_NICKNAME(508, "必需填写昵称"),
+    FILE_TYPE_ERROR(509, "文件类型错误，请上传jpg文件"),
+    FILE_NOT_FOUND(510, "文件不存在"),
+    FILE_WRITE_ERROR(511, "文件写入错误")
 
-    FILE_TYPE_ERROR(509, "文件类型错误，请上传jpg文件")
     ;
     int code;
     String msg;

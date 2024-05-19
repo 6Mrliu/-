@@ -7,6 +7,9 @@ import com.sangeng.service.ISgLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 友链相关接口
+ */
 @RestController
 @RequestMapping("/content/link")
 public class LinkController {

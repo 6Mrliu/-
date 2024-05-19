@@ -7,12 +7,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginUser implements UserDetails {
 
     private SysUser user;//用户信息
+    private List<String> permission;//权限信息
 
     //权限信息
     @Override

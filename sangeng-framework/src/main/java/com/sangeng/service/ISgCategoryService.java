@@ -8,6 +8,8 @@ import com.sangeng.domain.dto.CategoryPageQueryDTO;
 import com.sangeng.domain.entity.SgCategory;
 import com.sangeng.domain.vo.CategoryListVo;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
