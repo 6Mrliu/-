@@ -131,5 +131,4 @@ public class AdminLoginServiceImpl implements AdminLoginService {
         return ResponseResult.okResult();
     }
 
-
 }

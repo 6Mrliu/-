@@ -1,0 +1,26 @@
+# 配置日志管理方式，指定使用classpath下的logback.xml配置文件
+logging:
+    config: classpath:logback.xml
+# XXL-JOB配置
+xxl:
+    job:
+        # accessToken用于身份验证，为空表示不启用
+        accessToken: ''
+        # adminAddresses是XXL-JOB管理员地址列表
+        admin:
+            addresses: http://192.168.204.136:8093/xxl-job-admin
+        # executor配置执行器相关信息
+        executor:
+            # address是执行器地址，为空表示自动获取IP
+            address: ''
+            # appname是执行器应用名称
+            appname: sgBlog-view-count
+            # ip是执行器IP地址，为空表示自动获取
+            ip: ''
+            # logpath是执行器日志路径
+            logpath: ./logs
+            # logretentiondays是执行器日志保留天数
+            logretentiondays: 30
+            # port是执行器端口
+            port: 9888
+

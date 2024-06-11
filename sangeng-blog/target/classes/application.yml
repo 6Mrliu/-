@@ -8,14 +8,16 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   redis:
-      host: localhost
+      host: 192.168.204.136
       port: 6379
-      password: 123456
+      password: 1234
       database: 10
   servlet:
     multipart:
       max-file-size: 2MB
       max-request-size: 2MB
+  profiles:
+    active: xxljob
 mybatis-plus:
   configuration:
     # 日志
